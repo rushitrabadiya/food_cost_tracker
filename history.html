@@ -1,28 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>History - Food Expense</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <h2>📜 Expense History</h2>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>History - Food Expense</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>📜 Expense History</h2>
 
-  <div style="text-align: center; margin-bottom: 20px;">
-    <button onclick="exportPDF()">📄 Export to PDF</button>
-    <button onclick="exportExcel()">📊 Export to Excel</button>
-  </div>
-  <div style="text-align: center; margin-bottom: 20px;">
-    <button class="backButton" onclick="window.location.href='index.html'">📊 Back To Home</button>
-  </div>
-  
+      <div class="section">
+        <div class="button-group">
+          <button onclick="exportPDF()" class="export-button">
+            <span>📄 Export to PDF</span>
+          </button>
+          <button onclick="exportExcel()" class="export-button">
+            <span>📊 Export to Excel</span>
+          </button>
+          <button
+            onclick="window.location.href='index.html'"
+            class="back-button"
+          >
+            <span>← Back To Home</span>
+          </button>
+        </div>
 
-  <div id="historyList" class="history-container"></div>
+        <div id="historyList" class="history-container"></div>
+      </div>
+    </div>
 
-  <!-- Export Libraries -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="history.js"></script>
-</body>
+    <!-- Export Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="history.js"></script>
+  </body>
 </html>

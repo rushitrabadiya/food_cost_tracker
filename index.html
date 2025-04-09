@@ -1,32 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Food Expense Tracker</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <h2>🍽️ Food Expense Tracker</h2>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Food Expense Tracker</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>🍽️ Food Expense Tracker</h2>
 
-  <h3>Add Daily Expense</h3>
-  <input type="number" id="expenseAmount" placeholder="Enter total expense" />
-  <input type="text" id="expenseMsg" placeholder="Enter message (e.g., Lunch, Snacks)" />
-  <div class="checkbox-group" id="memberCheckboxes"></div>
-  <button onclick="addExpense()">Add Expense</button>
+      <div class="section">
+        <h3>Add Daily Expense</h3>
+        <div class="input-group">
+          <input type="date" id="expenseDate" required />
+          <input
+            type="number"
+            id="expenseAmount"
+            placeholder="Enter total expense"
+          />
+          <div class="input-with-suggestions">
+            <input
+              type="text"
+              id="expenseMsg"
+              list="mealSuggestions"
+              placeholder="Enter message (e.g., Lunch, Snacks)"
+            />
+            <datalist id="mealSuggestions">
+              <option value="Breakfast"></option>
+              <option value="Morning Snacks"></option>
+              <option value="Lunch"></option>
+              <option value="Evening Snacks"></option>
+              <option value="Dinner"></option>
+              <option value="Late Night Snacks"></option>
+              <option value="Groceries"></option>
+              <option value="Restaurant"></option>
+              <option value="Party"></option>
+            </datalist>
+          </div>
+          <div class="checkbox-group" id="memberCheckboxes"></div>
+          <button onclick="addExpense()">Add Expense</button>
+        </div>
+      </div>
 
-  <h3>Record Payment</h3>
-  <select id="personSelect"></select>
-  <input type="number" id="paymentAmount" placeholder="Enter payment amount" />
-  <button onclick="recordPayment()">Record Payment</button>
+      <div class="section">
+        <h3>Record Payment</h3>
+        <div class="input-group">
+          <select id="personSelect"></select>
+          <input
+            type="number"
+            id="paymentAmount"
+            placeholder="Enter payment amount"
+          />
+          <button onclick="recordPayment()">Record Payment</button>
+        </div>
+      </div>
 
-  <h3>Balances</h3>
-  <div id="balanceContainer"></div>
+      <div class="section">
+        <h3>Balances</h3>
+        <div id="balanceContainer"></div>
+      </div>
 
-  <div style="text-align:center; margin-top: 30px;">
-    <a href="history.html" target="_blank">📜 View History</a>
-  </div>
+      <div class="section" style="text-align:center; margin-top: 30px;">
+        <a href="history.html" class="history-link">📜 View History</a>
+      </div>
+    </div>
 
-  <script src="script.js"></script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>
