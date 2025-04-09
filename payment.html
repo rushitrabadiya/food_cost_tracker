@@ -3,14 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Transaction History - Expense Tracker Pro</title>
+    <title>Record Payment - Expense Tracker Pro</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="header.css" />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
     />
-    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
   </head>
   <body>
     <header class="header">
@@ -22,29 +21,41 @@
         />
         <nav class="nav-menu">
           <a href="index.html" class="nav-item">Add Expense</a>
-          <a href="payment.html" class="nav-item">Record Payment</a>
+          <a href="payment.html" class="nav-item active">Record Payment</a>
           <a href="balances.html" class="nav-item">Current Balances</a>
-          <a href="history.html" class="nav-item active">Transaction History</a>
+          <a href="history.html" class="nav-item">Transaction History</a>
         </nav>
       </div>
     </header>
 
     <div class="container">
       <div class="section">
-        <h3>Transaction History</h3>
-        <div class="export-buttons">
-          <button onclick="exportToPDF()" class="secondary-button">
-            <span class="icon">📄</span> Export to PDF
-          </button>
-          <button onclick="exportToExcel()" class="secondary-button">
-            <span class="icon">📊</span> Export to Excel
+        <h3>Record Payment</h3>
+        <div class="input-group payment-section">
+          <div class="input-row">
+            <div class="input-field">
+              <label for="personSelect">Select Person</label>
+              <select id="personSelect" required></select>
+            </div>
+            <div class="input-field">
+              <label for="paymentAmount">Payment Amount (₹)</label>
+              <input
+                type="number"
+                id="paymentAmount"
+                placeholder="Enter amount"
+                required
+              />
+            </div>
+          </div>
+          <button onclick="recordPayment()" class="primary-button">
+            Record Payment
           </button>
         </div>
-        <div id="historyContainer" class="history-container"></div>
       </div>
     </div>
 
+    <!-- Scripts -->
     <script src="config.js"></script>
-    <script src="history.js"></script>
+    <script defer src="script.js"></script>
   </body>
 </html>

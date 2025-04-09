@@ -3,69 +3,153 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Food Expense Tracker</title>
+    <title>Add New Expense - Expense Tracker Pro</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="header.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    />
   </head>
   <body>
+    <header class="header">
+      <div class="inner-header">
+        <img
+          src="https://stackdot.in/wp-content/uploads/2023/03/stackdotsvg.svg"
+          alt="Stackdot Logo"
+          class="logo"
+        />
+        <nav class="nav-menu">
+          <a href="index.html" class="nav-item active">Add Expense</a>
+          <a href="payment.html" class="nav-item">Record Payment</a>
+          <a href="balances.html" class="nav-item">Current Balances</a>
+          <a href="history.html" class="nav-item">Transaction History</a>
+        </nav>
+      </div>
+    </header>
+
     <div class="container">
-      <h2>🍽️ Food Expense Tracker</h2>
-
       <div class="section">
-        <h3>Add Daily Expense</h3>
+        <h3>Add New Expense</h3>
         <div class="input-group">
-          <input type="date" id="expenseDate" required />
-          <input
-            type="number"
-            id="expenseAmount"
-            placeholder="Enter total expense"
-          />
-          <div class="input-with-suggestions">
-            <input
-              type="text"
-              id="expenseMsg"
-              list="mealSuggestions"
-              placeholder="Enter message (e.g., Lunch, Snacks)"
-            />
-            <datalist id="mealSuggestions">
-              <option value="Breakfast"></option>
-              <option value="Morning Snacks"></option>
-              <option value="Lunch"></option>
-              <option value="Evening Snacks"></option>
-              <option value="Dinner"></option>
-              <option value="Late Night Snacks"></option>
-              <option value="Groceries"></option>
-              <option value="Restaurant"></option>
-              <option value="Party"></option>
-            </datalist>
+          <!-- Date and Amount Row -->
+          <div class="input-row">
+            <div class="input-field">
+              <label for="expenseDate">Date</label>
+              <input type="date" id="expenseDate" required />
+            </div>
+            <div class="input-field">
+              <label for="expenseAmount">Amount (₹)</label>
+              <input
+                type="number"
+                id="expenseAmount"
+                placeholder="Enter amount"
+                required
+              />
+            </div>
           </div>
-          <div class="checkbox-group" id="memberCheckboxes"></div>
-          <button onclick="addExpense()">Add Expense</button>
+
+          <!-- Category and Subcategory Row -->
+          <div class="input-row">
+            <div class="input-field">
+              <label for="expenseCategory">Category</label>
+              <select id="expenseCategory" required>
+                <option value="">Select Category</option>
+              </select>
+            </div>
+            <div class="input-field">
+              <label for="expenseSubcategory">Subcategory</label>
+              <select id="expenseSubcategory">
+                <option value="">Select Subcategory</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Description and Split Method Row -->
+          <div class="input-row">
+            <div class="input-field">
+              <label for="expenseMsg">Description</label>
+              <input
+                type="text"
+                id="expenseMsg"
+                list="mealSuggestions"
+                placeholder="What's this expense for?"
+                required
+              />
+              <datalist id="mealSuggestions">
+                <option value="Breakfast"></option>
+                <option value="Morning Snacks"></option>
+                <option value="Lunch"></option>
+                <option value="Evening Snacks"></option>
+                <option value="Dinner"></option>
+                <option value="Late Night Snacks"></option>
+                <option value="Groceries"></option>
+                <option value="Restaurant"></option>
+                <option value="Party"></option>
+              </datalist>
+            </div>
+            <div class="input-field">
+              <label for="splitMethod">Split Method</label>
+              <select id="splitMethod" required>
+                <option value="equal">Split Equally</option>
+                <option value="percentage">Split by Percentage</option>
+                <option value="exact">Split by Exact Amounts</option>
+                <option value="shares">Split by Shares</option>
+                <option value="adjustment">Split with Adjustments</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Split Options Container -->
+          <div
+            id="splitOptionsContainer"
+            class="split-options"
+            style="display: none;"
+          >
+            <!-- Will be populated based on split method -->
+          </div>
+
+          <!-- Members Selection -->
+          <div class="members-section">
+            <label>Select Members</label>
+            <div class="checkbox-group" id="memberCheckboxes"></div>
+          </div>
+
+          <!-- Optional Note -->
+          <div class="input-row">
+            <div class="input-field">
+              <label for="expenseNote">Note (Optional)</label>
+              <textarea
+                id="expenseNote"
+                placeholder="Add any additional details..."
+                rows="2"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Image Upload -->
+          <div class="image-upload">
+            <label for="receiptImage">
+              <span class="upload-icon">📎</span>
+              <span>Attach Receipt (Optional)</span>
+            </label>
+            <input
+              type="file"
+              id="receiptImage"
+              accept="image/*"
+              style="display: none;"
+            />
+          </div>
+
+          <button onclick="addExpense()" class="primary-button">
+            Add Expense
+          </button>
         </div>
-      </div>
-
-      <div class="section">
-        <h3>Record Payment</h3>
-        <div class="input-group">
-          <select id="personSelect"></select>
-          <input
-            type="number"
-            id="paymentAmount"
-            placeholder="Enter payment amount"
-          />
-          <button onclick="recordPayment()">Record Payment</button>
-        </div>
-      </div>
-
-      <div class="section">
-        <h3>Balances</h3>
-        <div id="balanceContainer"></div>
-      </div>
-
-      <div class="section" style="text-align:center; margin-top: 30px;">
-        <a href="history.html" class="history-link">📜 View History</a>
       </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script defer src="script.js"></script>
   </body>
 </html>
