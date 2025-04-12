@@ -695,3 +695,58 @@ function updateSharesTotal() {
   });
   document.getElementById("sharesTotal").textContent = `Total Shares: ${total}`;
 }
+
+// Authentication functions
+function handleLogin(event) {
+  event.preventDefault();
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  // Static test credentials
+  const testEmail = "test@example.com";
+  const testPassword = "password123";
+
+  if (email === testEmail && password === testPassword) {
+    localStorage.setItem("isLoggedIn", "true");
+    localStorage.setItem("userEmail", email);
+    window.location.href = "dashboard.html";
+  } else {
+    alert(
+      "Invalid credentials. Use:\nEmail: test@example.com\nPassword: password123"
+    );
+  }
+}
+
+function handleRegister(event) {
+  event.preventDefault();
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+
+  if (password !== confirmPassword) {
+    alert("Passwords do not match!");
+    return;
+  }
+
+  // Here you would typically make an API call to register the user
+  // For now, we'll just store the registration state
+  localStorage.setItem("isLoggedIn", "true");
+  localStorage.setItem("userEmail", email);
+  localStorage.setItem("userName", name);
+  window.location.href = "dashboard.html";
+}
+
+// Add event listeners for login and register forms
+document.addEventListener("DOMContentLoaded", function () {
+  const loginForm = document.getElementById("loginForm");
+  const registerForm = document.getElementById("registerForm");
+
+  if (loginForm) {
+    loginForm.addEventListener("submit", handleLogin);
+  }
+
+  if (registerForm) {
+    registerForm.addEventListener("submit", handleRegister);
+  }
+});

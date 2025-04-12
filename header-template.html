@@ -1,0 +1,68 @@
+<header class="header">
+  <div class="inner-header">
+    <img
+      src="https://stackdot.in/wp-content/uploads/2023/03/stackdotsvg.svg"
+      alt="Stackdot Logo"
+      class="logo"
+    />
+    <nav class="nav-menu">
+      <a href="dashboard.html" class="nav-item" id="dashboard-link"
+        >Add Expense</a
+      >
+      <a href="payment.html" class="nav-item" id="payment-link"
+        >Record Payment</a
+      >
+      <a href="balances.html" class="nav-item" id="balances-link"
+        >Current Balances</a
+      >
+      <a href="history.html" class="nav-item" id="history-link"
+        >Transaction History</a
+      >
+      <button onclick="logout()" class="nav-item logout-button">Logout</button>
+    </nav>
+  </div>
+</header>
+
+<script>
+  // Authentication check
+  function checkAuth() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    if (!isLoggedIn) {
+      window.location.href = 'login.html';
+    }
+  }
+
+  // Logout function
+  function logout() {
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('userEmail');
+    window.location.href = 'login.html';
+  }
+
+  // Set active nav item based on current page
+  function setActiveNavItem() {
+    const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+
+    switch(currentPage) {
+      case 'dashboard.html':
+        document.getElementById('dashboard-link').classList.add('active');
+        break;
+      case 'payment.html':
+        document.getElementById('payment-link').classList.add('active');
+        break;
+      case 'balances.html':
+        document.getElementById('balances-link').classList.add('active');
+        break;
+      case 'history.html':
+        document.getElementById('history-link').classList.add('active');
+        break;
+    }
+  }
+
+  // Check authentication on page load
+  checkAuth();
+  // Set active nav item on page load
+  setActiveNavItem();
+</script>

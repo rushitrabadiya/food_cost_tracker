@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add New Expense - Expense Tracker Pro</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="header.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    />
+  </head>
+  <body>
+    <header class="header">
+      <div class="inner-header">
+        <img
+          src="https://stackdot.in/wp-content/uploads/2023/03/stackdotsvg.svg"
+          alt="Stackdot Logo"
+          class="logo"
+        />
+        <nav class="nav-menu">
+          <a href="dashboard.html" class="nav-item active">Add Expense</a>
+          <a href="payment.html" class="nav-item">Record Payment</a>
+          <a href="balances.html" class="nav-item">Current Balances</a>
+          <a href="history.html" class="nav-item">Transaction History</a>
+          <button onclick="logout()" class="nav-item logout-button">
+            Logout
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="section">
+        <h3>Add New Expense</h3>
+        <div class="input-group">
+          <!-- Move Members Selection to top -->
+          <div class="members-section">
+            <h3>Select Members</h3>
+            <div class="select-all-container">
+              <label class="select-all-label">
+                <input type="checkbox" id="selectAll" />
+                <span>Select All Members</span>
+              </label>
+            </div>
+            <div class="checkbox-group" id="memberCheckboxes"></div>
+          </div>
+          <!-- Date and Amount Row -->
+          <div class="input-row">
+            <div class="input-field">
+              <label for="expenseDate">Date</label>
+              <input type="date" id="expenseDate" required />
+            </div>
+            <div class="input-field">
+              <label for="expenseAmount">Amount (₹)</label>
+              <input
+                type="number"
+                id="expenseAmount"
+                placeholder="Enter amount"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Category and Subcategory Row -->
+          <div class="input-row">
+            <div class="input-field">
+              <label for="expenseCategory">Category</label>
+              <select id="expenseCategory" required>
+                <option value="">Select Category</option>
+              </select>
+            </div>
+            <div class="input-field">
+              <label for="expenseSubcategory">Subcategory</label>
+              <select id="expenseSubcategory">
+                <option value="">Select Subcategory</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Description and Split Method Row -->
+          <div class="input-row">
+            <div class="input-field">
+              <label for="expenseMsg">Description</label>
+              <input
+                type="text"
+                id="expenseMsg"
+                list="mealSuggestions"
+                placeholder="What's this expense for?"
+                required
+              />
+              <datalist id="mealSuggestions">
+                <option value="Breakfast"></option>
+                <option value="Morning Snacks"></option>
+                <option value="Lunch"></option>
+                <option value="Evening Snacks"></option>
+                <option value="Dinner"></option>
+                <option value="Late Night Snacks"></option>
+                <option value="Groceries"></option>
+                <option value="Restaurant"></option>
+                <option value="Party"></option>
+              </datalist>
+            </div>
+            <div class="input-field">
+              <label for="splitMethod">Split Method</label>
+              <select id="splitMethod" required>
+                <option value="equal">⚖️ Split Equally</option>
+                <option value="shares">📋 Split by Shares</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Split Options Container -->
+          <div
+            id="splitOptionsContainer"
+            class="split-options"
+            style="display: none;"
+          >
+            <!-- Will be populated based on split method -->
+          </div>
+
+          <!-- Optional Note -->
+          <div class="input-row">
+            <div class="input-field">
+              <label for="expenseNote">Note (Optional)</label>
+              <textarea
+                id="expenseNote"
+                placeholder="Add any additional details..."
+                rows="2"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Image Upload -->
+          <div class="image-upload">
+            <label for="receiptImage">
+              <span class="upload-icon">📎</span>
+              <span>Attach Receipt (Optional)</span>
+            </label>
+            <input
+              type="file"
+              id="receiptImage"
+              accept="image/*"
+              style="display: none;"
+            />
+          </div>
+
+          <button onclick="addExpense()" class="primary-button">
+            Add Expense
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+    <script>
+      // Check if user is logged in
+      function checkAuth() {
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        if (!isLoggedIn) {
+          window.location.href = 'login.html';
+        }
+      }
+
+      // Logout function
+      function logout() {
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('userEmail');
+        window.location.href = 'login.html';
+      }
+
+      // Check authentication on page load
+      checkAuth();
+    </script>
+  </body>
+</html>

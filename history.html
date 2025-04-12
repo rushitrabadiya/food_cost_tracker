@@ -13,21 +13,8 @@
     <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
   </head>
   <body>
-    <header class="header">
-      <div class="inner-header">
-        <img
-          src="https://stackdot.in/wp-content/uploads/2023/03/stackdotsvg.svg"
-          alt="Stackdot Logo"
-          class="logo"
-        />
-        <nav class="nav-menu">
-          <a href="index.html" class="nav-item">Add Expense</a>
-          <a href="payment.html" class="nav-item">Record Payment</a>
-          <a href="balances.html" class="nav-item">Current Balances</a>
-          <a href="history.html" class="nav-item active">Transaction History</a>
-        </nav>
-      </div>
-    </header>
+    <!-- Include the common header -->
+    <div id="header-container"></div>
 
     <div class="container">
       <div class="section">
@@ -46,5 +33,13 @@
 
     <script src="config.js"></script>
     <script src="history.js"></script>
+    <script>
+      // Load the header
+      fetch('header-template.html')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('header-container').innerHTML = html;
+        });
+    </script>
   </body>
 </html>
