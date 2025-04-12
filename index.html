@@ -32,6 +32,17 @@
       <div class="section">
         <h3>Add New Expense</h3>
         <div class="input-group">
+          <!-- Move Members Selection to top -->
+          <div class="members-section">
+            <h3>Select Members</h3>
+            <div class="select-all-container">
+              <label class="select-all-label">
+                <input type="checkbox" id="selectAll" />
+                <span>Select All Members</span>
+              </label>
+            </div>
+            <div class="checkbox-group" id="memberCheckboxes"></div>
+          </div>
           <!-- Date and Amount Row -->
           <div class="input-row">
             <div class="input-field">
@@ -91,11 +102,8 @@
             <div class="input-field">
               <label for="splitMethod">Split Method</label>
               <select id="splitMethod" required>
-                <option value="equal">Split Equally</option>
-                <option value="percentage">Split by Percentage</option>
-                <option value="exact">Split by Exact Amounts</option>
-                <option value="shares">Split by Shares</option>
-                <option value="adjustment">Split with Adjustments</option>
+                <option value="equal">⚖️ Split Equally</option>
+                <option value="shares">📋 Split by Shares</option>
               </select>
             </div>
           </div>
@@ -107,12 +115,6 @@
             style="display: none;"
           >
             <!-- Will be populated based on split method -->
-          </div>
-
-          <!-- Members Selection -->
-          <div class="members-section">
-            <label>Select Members</label>
-            <div class="checkbox-group" id="memberCheckboxes"></div>
           </div>
 
           <!-- Optional Note -->

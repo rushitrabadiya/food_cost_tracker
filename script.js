@@ -24,21 +24,44 @@ function initializePersonSelect() {
 // Initialize member checkboxes
 function initializeMemberCheckboxes() {
   const memberCheckboxes = document.getElementById("memberCheckboxes");
-  if (memberCheckboxes) {
-    memberCheckboxes.innerHTML = ""; // Clear existing checkboxes
-    // Get members from APP_CONFIG
-    const members = APP_CONFIG.MEMBERS || [];
-    members.forEach((member) => {
-      const label = document.createElement("label");
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.value = member.name;
-      checkbox.checked = true;
-      label.appendChild(checkbox);
-      label.appendChild(document.createTextNode(member.name));
-      memberCheckboxes.appendChild(label);
+  const selectAllCheckbox = document.getElementById("selectAll");
+
+  // Clear existing checkboxes
+  memberCheckboxes.innerHTML = "";
+
+  // Add member checkboxes
+  APP_CONFIG.MEMBERS.forEach((member) => {
+    const label = document.createElement("label");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.value = member.name;
+    checkbox.checked = false; // Make unchecked by default
+
+    label.appendChild(checkbox);
+    label.appendChild(document.createTextNode(member.name));
+    memberCheckboxes.appendChild(label);
+  });
+
+  // Handle select all functionality
+  selectAllCheckbox.addEventListener("change", function () {
+    const checkboxes = memberCheckboxes.querySelectorAll(
+      "input[type='checkbox']"
+    );
+    checkboxes.forEach((checkbox) => {
+      checkbox.checked = this.checked;
     });
-  }
+  });
+
+  // Update select all state when individual checkboxes change
+  memberCheckboxes.addEventListener("change", function (e) {
+    if (e.target.type === "checkbox") {
+      const checkboxes = memberCheckboxes.querySelectorAll(
+        "input[type='checkbox']"
+      );
+      const allChecked = Array.from(checkboxes).every((cb) => cb.checked);
+      selectAllCheckbox.checked = allChecked;
+    }
+  });
 }
 
 // Initialize everything when the document loads
@@ -407,15 +430,25 @@ function initializeCategories() {
   });
 }
 
-// Handle split method changes
+// Initialize split methods
 function initializeSplitMethods() {
   const splitMethod = document.getElementById("splitMethod");
   const splitOptionsContainer = document.getElementById(
     "splitOptionsContainer"
   );
 
+  // Clear existing options and set only Equal and Shares options
+  splitMethod.innerHTML = `
+    <option value="equal">⚖️ Split Equally</option>
+    <option value="shares">📋 Split by Shares</option>
+  `;
+
+  // Set default to equal
+  splitMethod.value = "equal";
+
+  // Handle split method change
   splitMethod.addEventListener("change", function () {
-    const method = this.value;
+    const method = this.value.toLowerCase();
     const selectedMembers = Array.from(
       memberCheckboxes.querySelectorAll("input:checked")
     ).map((cb) => cb.value);
@@ -426,212 +459,87 @@ function initializeSplitMethods() {
       return;
     }
 
-    splitOptionsContainer.style.display = "block";
-
-    switch (method) {
-      case "equal":
-        splitOptionsContainer.style.display = "none";
-        break;
-
-      case "percentage":
-        renderPercentageSplit(selectedMembers);
-        break;
-
-      case "exact":
-        renderExactSplit(selectedMembers);
-        break;
-
-      case "shares":
-        renderSharesSplit(selectedMembers);
-        break;
-
-      case "adjustment":
-        renderAdjustmentSplit(selectedMembers);
-        break;
+    if (method === "equal") {
+      // Hide the split options container for equal split
+      splitOptionsContainer.style.display = "none";
+    } else {
+      // Show and update split options for shares
+      updateSplitOptions(method, selectedMembers);
     }
   });
 }
 
-// Render split options based on method
-function renderPercentageSplit(members) {
-  const container = document.getElementById("splitOptionsContainer");
-  const totalMembers = members.length;
-  const equalPercentage = (100 / totalMembers).toFixed(2);
-
-  container.innerHTML = `
-    <h4>Split by Percentage</h4>
-    <p>Total: 100%</p>
-    ${members
-      .map(
-        (member) => `
-      <div class="member-split">
-        <label>${member}</label>
-        <input type="number" 
-               class="percentage-input" 
-               value="${equalPercentage}" 
-               data-member="${member}"
-               step="0.01"
-               min="0"
-               max="100">
-      </div>
-    `
-      )
-      .join("")}
-    <div id="percentageTotal">Total: ${equalPercentage * totalMembers}%</div>
-  `;
-
-  // Add event listeners to update total
-  const inputs = container.querySelectorAll(".percentage-input");
-  inputs.forEach((input) => {
-    input.addEventListener("input", updatePercentageTotal);
-  });
-}
-
-function renderExactSplit(members) {
+// Update split options based on selected method
+function updateSplitOptions(method, selectedMembers) {
   const container = document.getElementById("splitOptionsContainer");
   const amount =
     parseFloat(document.getElementById("expenseAmount").value) || 0;
-  const equalAmount = (amount / members.length).toFixed(2);
 
-  container.innerHTML = `
-    <h4>Split by Exact Amounts</h4>
-    <p>Total: ₹${amount}</p>
-    ${members
-      .map(
-        (member) => `
-      <div class="member-split">
-        <label>${member}</label>
-        <input type="number" 
-               class="exact-input" 
-               value="${equalAmount}" 
-               data-member="${member}"
-               step="0.01"
-               min="0">
-      </div>
-    `
-      )
-      .join("")}
-    <div id="exactTotal">Total: ₹${equalAmount * members.length}</div>
+  if (method === "equal") {
+    container.style.display = "none";
+    return;
+  }
+
+  // Show the container for shares method
+  container.style.display = "block";
+
+  let html = `
+    <div class="split-options">
+      <h4>
+        <span class="split-method-icon">📋</span>
+        Split by Shares
+      </h4>
+      <div class="split-columns">
+        <div class="split-column">
   `;
 
-  // Add event listeners to update total
-  const inputs = container.querySelectorAll(".exact-input");
-  inputs.forEach((input) => {
-    input.addEventListener("input", updateExactTotal);
+  // Calculate the midpoint to split the members into two columns
+  const midpoint = Math.ceil(selectedMembers.length / 2);
+  const firstColumnMembers = selectedMembers.slice(0, midpoint);
+  const secondColumnMembers = selectedMembers.slice(midpoint);
+
+  // First column
+  firstColumnMembers.forEach((member) => {
+    html += `
+      <div class="split-option">
+        <label>${member}</label>
+        <input type="number" class="shares-input" value="1" 
+               data-member="${member}" min="0" step="1">
+        <span class="shares-text">shares</span>
+      </div>
+    `;
   });
-}
 
-function renderSharesSplit(members) {
-  const container = document.getElementById("splitOptionsContainer");
-
-  container.innerHTML = `
-    <h4>Split by Shares</h4>
-    ${members
-      .map(
-        (member) => `
-      <div class="member-split">
-        <label>${member}</label>
-        <input type="number" 
-               class="shares-input" 
-               value="1" 
-               data-member="${member}"
-               min="0"
-               step="1">
-      </div>
-    `
-      )
-      .join("")}
-    <div id="sharesTotal">Total Shares: ${members.length}</div>
+  html += `
+        </div>
+        <div class="split-column">
   `;
 
-  // Add event listeners to update total
+  // Second column
+  secondColumnMembers.forEach((member) => {
+    html += `
+      <div class="split-option">
+        <label>${member}</label>
+        <input type="number" class="shares-input" value="1" 
+               data-member="${member}" min="0" step="1">
+        <span class="shares-text">shares</span>
+      </div>
+    `;
+  });
+
+  html += `
+        </div>
+      </div>
+      <div id="sharesTotal">Total Shares: ${selectedMembers.length}</div>
+    </div>
+  `;
+
+  container.innerHTML = html;
+
+  // Add event listeners for shares
   const inputs = container.querySelectorAll(".shares-input");
   inputs.forEach((input) => {
     input.addEventListener("input", updateSharesTotal);
-  });
-}
-
-function renderAdjustmentSplit(members) {
-  const container = document.getElementById("splitOptionsContainer");
-  const amount =
-    parseFloat(document.getElementById("expenseAmount").value) || 0;
-  const equalAmount = (amount / members.length).toFixed(2);
-
-  container.innerHTML = `
-    <h4>Split with Adjustments</h4>
-    <p>Base amount per person: ₹${equalAmount}</p>
-    ${members
-      .map(
-        (member) => `
-      <div class="member-split">
-        <label>${member}</label>
-        <input type="number" 
-               class="adjustment-input" 
-               value="0" 
-               data-member="${member}"
-               step="0.01"
-               placeholder="+ or - amount">
-      </div>
-    `
-      )
-      .join("")}
-  `;
-}
-
-// Update totals for different split methods
-function updatePercentageTotal() {
-  const inputs = document.querySelectorAll(".percentage-input");
-  let total = 0;
-  inputs.forEach((input) => {
-    total += parseFloat(input.value) || 0;
-  });
-  document.getElementById(
-    "percentageTotal"
-  ).textContent = `Total: ${total.toFixed(2)}%`;
-}
-
-function updateExactTotal() {
-  const inputs = document.querySelectorAll(".exact-input");
-  let total = 0;
-  inputs.forEach((input) => {
-    total += parseFloat(input.value) || 0;
-  });
-  document.getElementById("exactTotal").textContent = `Total: ₹${total.toFixed(
-    2
-  )}`;
-}
-
-function updateSharesTotal() {
-  const inputs = document.querySelectorAll(".shares-input");
-  let total = 0;
-  inputs.forEach((input) => {
-    total += parseInt(input.value) || 0;
-  });
-  document.getElementById("sharesTotal").textContent = `Total Shares: ${total}`;
-}
-
-// Handle receipt image upload
-function initializeImageUpload() {
-  const input = document.getElementById("receiptImage");
-  input.addEventListener("change", function (e) {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        const preview = document.createElement("img");
-        preview.src = e.target.result;
-        preview.className = "receipt-preview";
-        preview.style.display = "block";
-
-        const container = document.querySelector(".image-upload");
-        const existingPreview = container.querySelector(".receipt-preview");
-        if (existingPreview) {
-          container.removeChild(existingPreview);
-        }
-        container.appendChild(preview);
-      };
-      reader.readAsDataURL(file);
-    }
   });
 }
 
@@ -643,23 +551,6 @@ function calculateSplits(amount, members, splitMethod) {
     case "equal":
       const equalShare = amount / members.length;
       members.forEach((member) => (splits[member] = equalShare));
-      break;
-
-    case "percentage":
-      const percentInputs = document.querySelectorAll(".percentage-input");
-      percentInputs.forEach((input) => {
-        const member = input.dataset.member;
-        const percentage = parseFloat(input.value) || 0;
-        splits[member] = (amount * percentage) / 100;
-      });
-      break;
-
-    case "exact":
-      const exactInputs = document.querySelectorAll(".exact-input");
-      exactInputs.forEach((input) => {
-        const member = input.dataset.member;
-        splits[member] = parseFloat(input.value) || 0;
-      });
       break;
 
     case "shares":
@@ -675,19 +566,6 @@ function calculateSplits(amount, members, splitMethod) {
 
       Object.entries(memberShares).forEach(([member, share]) => {
         splits[member] = (amount * share) / totalShares;
-      });
-      break;
-
-    case "adjustment":
-      const baseShare = amount / members.length;
-      const adjustmentInputs = document.querySelectorAll(".adjustment-input");
-
-      members.forEach((member) => (splits[member] = baseShare));
-
-      adjustmentInputs.forEach((input) => {
-        const member = input.dataset.member;
-        const adjustment = parseFloat(input.value) || 0;
-        splits[member] += adjustment;
       });
       break;
   }
@@ -781,4 +659,39 @@ function initializeBalances() {
   }
 
   return balances;
+}
+
+// Handle receipt image upload
+function initializeImageUpload() {
+  const input = document.getElementById("receiptImage");
+  input.addEventListener("change", function (e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const preview = document.createElement("img");
+        preview.src = e.target.result;
+        preview.className = "receipt-preview";
+        preview.style.display = "block";
+
+        const container = document.querySelector(".image-upload");
+        const existingPreview = container.querySelector(".receipt-preview");
+        if (existingPreview) {
+          container.removeChild(existingPreview);
+        }
+        container.appendChild(preview);
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+}
+
+// Update totals for different split methods
+function updateSharesTotal() {
+  const inputs = document.querySelectorAll(".shares-input");
+  let total = 0;
+  inputs.forEach((input) => {
+    total += parseInt(input.value) || 0;
+  });
+  document.getElementById("sharesTotal").textContent = `Total Shares: ${total}`;
 }
